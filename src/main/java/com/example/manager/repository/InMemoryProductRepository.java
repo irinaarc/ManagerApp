@@ -16,8 +16,8 @@ public class InMemoryProductRepository implements ProductRepository {
 
     public InMemoryProductRepository() {
         IntStream.range(1, 4)
-                .forEach(i -> this.products.add(new Product(i, "Товар №%d".formatted(i)
-                , "Описание товара №%d".formatted(i))));
+                .forEach(i -> this.products.add(new Product(i, "Товар №%d".formatted(i),
+                "Описание товара №%d".formatted(i))));
     }
 
     @Override
