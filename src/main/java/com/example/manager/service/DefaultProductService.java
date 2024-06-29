@@ -4,8 +4,11 @@ import com.example.manager.entity.Product;
 import com.example.manager.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,4 +25,26 @@ public class DefaultProductService implements ProductService {
     public Product createProduct(String title, String details) {
         return this.productRepository.save(new Product(null, title, details));
     }
+
+    @Override
+    public Optional<Product> findProduct(int productId) {
+        return this.productRepository.finById(productId);
+    }
+
+    @Override
+    public void updateProduct(Integer id, String title, String details) {
+        this.productRepository.finById(id)
+                .ifPresentOrElse(product -> {
+                    product.setTitle(title);
+                    product.setDetails(details);
+                }, () -> {
+                    throw new NoSuchElementException();
+                });
+    }
+
+    @Override
+    public void deleteProduct(Integer id) {
+        this.productRepository.deleteById(id);
+    }
+
 }

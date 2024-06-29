@@ -6,16 +6,14 @@ import com.example.manager.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 // будет обрабатывать http запросы
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/catalogue/products")
 public class ProductsController {
+
     private final ProductService productService;
 
     @GetMapping("list")
@@ -32,6 +30,6 @@ public class ProductsController {
     @PostMapping("create")
     public String createProduct(NewProductPayload payload){
         Product product = this.productService.createProduct(payload.title(), payload.details());
-        return "redirect:/catalogue/products/list"; // перенаправление
+        return "redirect:/catalogue/products/%d".formatted(product.getId()); // перенаправление
     }
 }
