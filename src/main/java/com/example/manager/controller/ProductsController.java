@@ -3,9 +3,12 @@ package com.example.manager.controller;
 import com.example.manager.controller.payload.NewProductPayload;
 import com.example.manager.entity.Product;
 import com.example.manager.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 // будет обрабатывать http запросы
@@ -28,8 +31,18 @@ public class ProductsController {
     }
 
     @PostMapping("create")
-    public String createProduct(NewProductPayload payload){
+    public String createProduct(@Valid NewProductPayload payload,
+                                BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            //собираем ошибки, передаём в модел
+            model.addAttribute("payload", payload);
+            model.addAttribute("errors", bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList());
+            return "catalogue/products/new_product";
+        } else {
         Product product = this.productService.createProduct(payload.title(), payload.details());
         return "redirect:/catalogue/products/%d".formatted(product.getId()); // перенаправление
+        }
     }
 }
